@@ -32,14 +32,55 @@ app.post("/products", async (req, res) => {
             image: newProductData.image,
         }
     });
-    res.send({
+    res.status(200).send({
         data: product,
         message: "Product created successfully",
-        status: 200,
+        
     })
 });
 
 app.put("/products/:id", async (req, res) => {
+    const { id } = req.params;
+    const { name, description, price, image } = req.body;
+
+    if (productData.image && productData.description && productData.price && productData.name) {
+        return res.status(400).send({
+            message: "All fields are required",
+        });
+    }
+
+    const product = await prisma.product.update({
+        where: {
+            id: Number(id),
+        },
+        data: {
+            name,
+            description,
+            price,
+            image,
+        },
+    });
+    res.status(200).send({
+        data: product,
+        message: "Product updated successfully",
+    })
+})
+
+app.delete("/products/:id", async (req, res) =>{
+    const { id } = req.params;
+    const product = await prisma.product.delete({
+        where: {
+            id: Number(id),
+        },
+    });
+    res.status(200).send({
+        data: product,
+        message: "Product deleted successfully",
+
+    })
+})
+
+app.patch("/products/:id", async (req, res) =>{
     const { id } = req.params;
     const { name, description, price, image } = req.body;
 
@@ -53,25 +94,10 @@ app.put("/products/:id", async (req, res) => {
             price,
             image,
         },
-    });
-    res.send({
+    })
+    res.status(200).send({
         data: product,
         message: "Product updated successfully",
-        status: 200,
-    })
-})
-
-app.delete("/products/:id", async (req, res) =>{
-    const { id } = req.params;
-    const product = await prisma.product.delete({
-        where: {
-            id: Number(id),
-        },
-    });
-    res.send({
-        data: product,
-        message: "Product deleted successfully",
-        status: 200,
     })
 })
 
