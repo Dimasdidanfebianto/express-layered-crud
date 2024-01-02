@@ -21,6 +21,8 @@ app.get("/products", async (req, res) => {
     res.send(products);
 });
 
+app.get("/products/:id", as)
+
 app.post("/products", async (req, res) => {
     const newProductData = req.body;
 
